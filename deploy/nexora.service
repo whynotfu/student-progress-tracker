@@ -1,0 +1,15 @@
+[Unit]
+Description=Nexora Flask application
+After=network.target
+
+[Service]
+Type=simple
+User=nexora
+WorkingDirectory=/opt/nexora
+Environment="SECRET_KEY=change-me-in-production"
+Environment="DATABASE_URL=postgresql://nexora:nexora@localhost:5432/nexora"
+ExecStart=/opt/nexora/venv/bin/gunicorn -w 2 -b 127.0.0.1:8000 wsgi:app
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

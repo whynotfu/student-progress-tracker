@@ -1,4 +1,4 @@
-# StudGrade — автоматизированная система учёта успеваемости студентов
+# Nexora — автоматизированная система учёта успеваемости студентов
 
 Веб-приложение на Flask, реализующее требования технического задания
 (`лб1/Техническое задание.docx`): учёт контингента студентов, учебных
@@ -23,11 +23,11 @@
 
 ```bash
 sudo apt install -y postgresql
-sudo -u postgres psql -c "CREATE DATABASE studgrade;"
-sudo -u postgres psql -c "CREATE USER studgrade WITH PASSWORD 'studgrade';"
-sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE studgrade TO studgrade;"
+sudo -u postgres psql -c "CREATE DATABASE nexora;"
+sudo -u postgres psql -c "CREATE USER nexora WITH PASSWORD 'nexora';"
+sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE nexora TO nexora;"
 
-export DATABASE_URL="postgresql://studgrade:studgrade@localhost:5432/studgrade"
+export DATABASE_URL="postgresql://nexora:nexora@localhost:5432/nexora"
 ```
 
 Драйвер `psycopg2-binary` уже входит в `requirements.txt`.
@@ -38,16 +38,16 @@ export DATABASE_URL="postgresql://studgrade:studgrade@localhost:5432/studgrade"
 средствами СУБД. Для PostgreSQL это штатный `pg_dump`/`pg_restore`:
 
 ```bash
-pg_dump -U studgrade -h localhost studgrade > studgrade_$(date +%F).sql
+pg_dump -U nexora -h localhost nexora > nexora_$(date +%F).sql
 # восстановление:
-psql -U studgrade -h localhost studgrade < studgrade_2026-09-16.sql
+psql -U nexora -h localhost nexora < nexora_2026-09-16.sql
 ```
 
 Для автоматического (периодического) копирования на `prod`-стенде
 добавьте эту команду в `cron` (`crontab -e`), например ежедневно в 03:00:
 
 ```
-0 3 * * * pg_dump -U studgrade -h localhost studgrade > /var/backups/studgrade_$(date +\%F).sql
+0 3 * * * pg_dump -U nexora -h localhost nexora > /var/backups/nexora_$(date +\%F).sql
 ```
 
 ## Структура проекта
@@ -55,7 +55,7 @@ psql -U studgrade -h localhost studgrade < studgrade_2026-09-16.sql
 ```
 лр2/
   app/                 # исходный код приложения (модели, маршруты, шаблоны)
-  deploy/studgrade.service   # systemd-юнит для прод-стенда (gunicorn)
+  deploy/nexora.service   # systemd-юнит для прод-стенда (gunicorn)
   seed.py              # наполнение БД тестовыми данными
   wsgi.py              # точка входа
   requirements.txt
@@ -145,8 +145,8 @@ sudo apt install -y python3 python3-venv python3-pip git
 на тестовом стенде:
 
 ```bash
-git clone <URL-вашего-репозитория> studgrade
-cd studgrade
+git clone <URL-вашего-репозитория> nexora
+cd nexora
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
@@ -168,16 +168,16 @@ python wsgi.py            # прототип на скриптовом язык�
 вариант через `gunicorn`, который уже есть в `requirements.txt`:
 
 ```bash
-sudo mkdir -p /opt/studgrade
-sudo cp -r ~/studgrade/* /opt/studgrade/
-cd /opt/studgrade
+sudo mkdir -p /opt/nexora
+sudo cp -r ~/nexora/* /opt/nexora/
+cd /opt/nexora
 python3 -m venv venv
 venv/bin/pip install -r requirements.txt
 venv/bin/python seed.py
-sudo cp deploy/studgrade.service /etc/systemd/system/
+sudo cp deploy/nexora.service /etc/systemd/system/
 sudo systemctl daemon-reload
-sudo systemctl enable --now studgrade
-sudo systemctl status studgrade
+sudo systemctl enable --now nexora
+sudo systemctl status nexora
 ```
 
 `gunicorn` слушает только `127.0.0.1:8000` (не наружу) — снаружи
@@ -192,14 +192,14 @@ sudo systemctl status studgrade
 
 ```bash
 sudo apt install -y nginx openssl
-sudo mkdir -p /etc/ssl/studgrade
+sudo mkdir -p /etc/ssl/nexora
 sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
-  -keyout /etc/ssl/studgrade/studgrade.key \
-  -out /etc/ssl/studgrade/studgrade.crt \
-  -subj "/CN=studgrade.local"
+  -keyout /etc/ssl/nexora/nexora.key \
+  -out /etc/ssl/nexora/nexora.crt \
+  -subj "/CN=nexora.local"
 
-sudo cp deploy/nginx-studgrade.conf /etc/nginx/sites-available/studgrade
-sudo ln -s /etc/nginx/sites-available/studgrade /etc/nginx/sites-enabled/
+sudo cp deploy/nginx-nexora.conf /etc/nginx/sites-available/nexora
+sudo ln -s /etc/nginx/sites-available/nexora /etc/nginx/sites-enabled/
 sudo rm -f /etc/nginx/sites-enabled/default
 sudo nginx -t && sudo systemctl reload nginx
 ```
@@ -207,7 +207,7 @@ sudo nginx -t && sudo systemctl reload nginx
 Сертификат самоподписанный (для учебного стенда), браузер покажет
 предупреждение о недоверенном сертификате — это ожидаемо, нужно принять
 исключение и открыть `https://<IP-стенда>/`. Подробности — в
-`deploy/nginx-studgrade.conf`.
+`deploy/nginx-nexora.conf`.
 
 ### Что положить в отчёт (скриншоты)
 
@@ -218,6 +218,6 @@ sudo nginx -t && sudo systemctl reload nginx
 5. Установка venv/зависимостей (`pip install -r requirements.txt`).
 6. Запущенное приложение — страница логина/дашборд в браузере (для
    test и stage — через `python wsgi.py`, для prod — через
-   `systemctl status studgrade` и открытую страницу `https://<IP>/`).
+   `systemctl status nexora` и открытую страницу `https://<IP>/`).
 7. Успешная настройка nginx (`nginx -t`, `systemctl status nginx`) и
    страница, открытая по `https://`.
