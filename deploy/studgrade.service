@@ -1,0 +1,15 @@
+[Unit]
+Description=StudGrade Flask application
+After=network.target
+
+[Service]
+Type=simple
+User=studgrade
+WorkingDirectory=/opt/studgrade
+Environment="SECRET_KEY=change-me-in-production"
+Environment="DATABASE_URL=postgresql://studgrade:studgrade@localhost:5432/studgrade"
+ExecStart=/opt/studgrade/venv/bin/gunicorn -w 2 -b 127.0.0.1:8000 wsgi:app
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

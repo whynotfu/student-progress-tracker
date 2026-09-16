@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Студенты · StudGrade{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3>Контингент студентов</h3>
+  {% if current_user.is_methodist %}
+  <a href="{{ url_for('main.student_new') }}" class="btn btn-primary">Добавить студента</a>
+  {% endif %}
+</div>
+
+<table class="table table-striped align-middle">
+  <thead>
+    <tr>
+      <th>ФИО</th>
+      <th>Год поступления</th>
+      <th>Форма обучения</th>
+      <th>Группа</th>
+      {% if current_user.is_methodist %}<th></th>{% endif %}
+    </tr>
+  </thead>
+  <tbody>
+    {% for s in students %}
+    <tr>
+      <td>{{ s.full_name }}</td>
+      <td>{{ s.admission_year }}</td>
+      <td>{{ s.study_form }}</td>
+      <td>{{ s.group_name }}</td>
+      {% if current_user.is_methodist %}
+      <td class="text-end">
+        <a href="{{ url_for('main.student_edit', student_id=s.id) }}" class="btn btn-sm btn-outline-secondary">Изменить</a>
+        <form method="post" action="{{ url_for('main.student_delete', student_id=s.id) }}" class="d-inline" onsubmit="return confirm('Удалить студента?');">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button type="submit" class="btn btn-sm btn-outline-danger">Удалить</button>
+        </form>
+      </td>
+      {% endif %}
+    </tr>
+    {% else %}
+    <tr><td colspan="5" class="text-muted">Нет данных</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

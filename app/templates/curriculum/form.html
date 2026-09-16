@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Изменить запись' if item else 'Новая запись учебного плана' }} · StudGrade{% endblock %}
+{% block content %}
+<h3 class="mb-4">{{ 'Изменить запись учебного плана' if item else 'Добавить запись учебного плана' }}</h3>
+
+<form method="post" class="col-md-6">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <div class="mb-3">
+    <label class="form-label">Специальность</label>
+    <input type="text" class="form-control" name="speciality" value="{{ item.speciality if item else '' }}" required>
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Дисциплина</label>
+    <input type="text" class="form-control" name="discipline" value="{{ item.discipline if item else '' }}" required>
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Семестр</label>
+    <input type="number" class="form-control" name="semester" min="1" max="12" value="{{ item.semester if item else '' }}" required>
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Количество часов</label>
+    <input type="number" class="form-control" name="hours" min="1" value="{{ item.hours if item else '' }}" required>
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Форма отчётности</label>
+    <select class="form-select" name="report_form" required>
+      {% for form in report_forms %}
+      <option value="{{ form }}" {% if item and item.report_form == form %}selected{% endif %}>{{ form }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Преподаватель</label>
+    <select class="form-select" name="teacher_id">
+      <option value="">— не назначен —</option>
+      {% for t in teachers %}
+      <option value="{{ t.id }}" {% if item and item.teacher_id == t.id %}selected{% endif %}>{{ t.full_name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <button type="submit" class="btn btn-primary">Сохранить</button>
+  <a href="{{ url_for('main.curriculum_list') }}" class="btn btn-outline-secondary">Отмена</a>
+</form>
+{% endblock %}

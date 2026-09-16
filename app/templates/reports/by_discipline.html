@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Отчёт по дисциплине · StudGrade{% endblock %}
+{% block content %}
+<h3 class="mb-4">Часы и форма отчётности по дисциплине</h3>
+
+<form method="post" class="col-md-5 mb-4">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <div class="mb-3">
+    <label class="form-label">Дисциплина</label>
+    <input type="text" class="form-control" list="disciplines" name="discipline" value="{{ discipline or '' }}" required>
+    <datalist id="disciplines">
+      {% for d in disciplines %}
+      <option value="{{ d }}">
+      {% endfor %}
+    </datalist>
+  </div>
+  <button type="submit" class="btn btn-primary">Найти</button>
+</form>
+
+{% if rows is not none %}
+  {% if rows %}
+  <table class="table table-striped col-md-8">
+    <thead><tr><th>Специальность</th><th>Семестр</th><th>Часы</th><th>Форма отчётности</th></tr></thead>
+    <tbody>
+      {% for r in rows %}
+      <tr>
+        <td>{{ r.speciality }}</td>
+        <td>{{ r.semester }}</td>
+        <td>{{ r.hours }}</td>
+        <td>{{ r.report_form }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="alert alert-warning col-md-5">Дисциплина «{{ discipline }}» не найдена в учебном плане.</div>
+  {% endif %}
+{% endif %}
+{% endblock %}

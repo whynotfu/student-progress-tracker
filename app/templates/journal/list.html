@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Журнал успеваемости · StudGrade{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3>Журнал успеваемости</h3>
+  <a href="{{ url_for('main.journal_new') }}" class="btn btn-primary">Добавить оценку</a>
+</div>
+{% if not current_user.is_methodist %}
+<p class="text-muted">Показаны только оценки по дисциплинам, которые вы ведёте.</p>
+{% endif %}
+
+<table class="table table-striped align-middle">
+  <thead>
+    <tr>
+      <th>Учебный год</th>
+      <th>Семестр</th>
+      <th>Студент</th>
+      <th>Дисциплина</th>
+      <th>Оценка</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for e in entries %}
+    <tr>
+      <td>{{ e.academic_year }}</td>
+      <td>{{ e.curriculum.semester }}</td>
+      <td>{{ e.student.full_name }}</td>
+      <td>{{ e.curriculum.discipline }}</td>
+      <td>{{ e.grade }}</td>
+      <td class="text-end">
+        <a href="{{ url_for('main.journal_edit', entry_id=e.id) }}" class="btn btn-sm btn-outline-secondary">Изменить</a>
+        <form method="post" action="{{ url_for('main.journal_delete', entry_id=e.id) }}" class="d-inline" onsubmit="return confirm('Удалить запись?');">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button type="submit" class="btn btn-sm btn-outline-danger">Удалить</button>
+        </form>
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="6" class="text-muted">Нет данных</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Главная · StudGrade{% endblock %}
+{% block content %}
+<h3 class="mb-4">Главная</h3>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-4">
+    <div class="card text-bg-primary">
+      <div class="card-body">
+        <div class="fs-2">{{ totals.students }}</div>
+        <div>студентов в базе</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card text-bg-secondary">
+      <div class="card-body">
+        <div class="fs-2">{{ totals.curriculum }}</div>
+        <div>записей учебного плана</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card text-bg-success">
+      <div class="card-body">
+        <div class="fs-2">{{ totals.journal }}</div>
+        <div>записей журнала успеваемости</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h5>Студенты по форме обучения</h5>
+<table class="table table-sm w-auto">
+  <thead><tr><th>Форма обучения</th><th>Количество</th></tr></thead>
+  <tbody>
+  {% for form, count in stats.items() %}
+    <tr><td>{{ form }}</td><td>{{ count }}</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Изменить запись' if entry else 'Новая запись журнала' }} · StudGrade{% endblock %}
+{% block content %}
+<h3 class="mb-4">{{ 'Изменить запись журнала успеваемости' if entry else 'Добавить оценку в журнал' }}</h3>
+
+<form method="post" class="col-md-6">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <div class="mb-3">
+    <label class="form-label">Учебный год (например, 2025/2026)</label>
+    <input type="text" class="form-control" name="academic_year" value="{{ entry.academic_year if entry else '' }}" required>
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Студент</label>
+    <select class="form-select" name="student_id" required>
+      {% for s in students %}
+      <option value="{{ s.id }}" {% if entry and entry.student_id == s.id %}selected{% endif %}>{{ s.full_name }} ({{ s.group_name }})</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Дисциплина (семестр / форма отчётности)</label>
+    <select class="form-select" name="curriculum_id" id="curriculum_id" required>
+      {% for c in curricula %}
+      <option value="{{ c.id }}" data-report-form="{{ c.report_form }}"
+        {% if entry and entry.curriculum_id == c.id %}selected{% endif %}>
+        {{ c.discipline }} — сем. {{ c.semester }}, {{ c.report_form }}
+      </option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Оценка</label>
+    <select class="form-select" name="grade" id="grade"></select>
+  </div>
+  <button type="submit" class="btn btn-primary">Сохранить</button>
+  <a href="{{ url_for('main.journal_list') }}" class="btn btn-outline-secondary">Отмена</a>
+</form>
+
+<script>
+const EXAM_GRADES = ["2", "3", "4", "5"];
+const CREDIT_GRADES = ["зачет", "незачет"];
+const currentGrade = {{ (entry.grade if entry else '') | tojson }};
+
+function fillGrades() {
+  const select = document.getElementById("curriculum_id");
+  const option = select.options[select.selectedIndex];
+  const reportForm = option ? option.dataset.reportForm : "экзамен";
+  const grades = reportForm === "экзамен" ? EXAM_GRADES : CREDIT_GRADES;
+  const gradeSelect = document.getElementById("grade");
+  gradeSelect.innerHTML = "";
+  grades.forEach(function (g) {
+    const opt = document.createElement("option");
+    opt.value = g;
+    opt.textContent = g;
+    if (g === currentGrade) opt.selected = true;
+    gradeSelect.appendChild(opt);
+  });
+}
+
+document.getElementById("curriculum_id").addEventListener("change", fillGrades);
+fillGrades();
+</script>
+{% endblock %}
