@@ -34,7 +34,7 @@ def parse_int(raw_value, field_label, min_value=None, max_value=None):
         value = int(raw_value)
     except (TypeError, ValueError):
         raise ValueError(f'Поле "{field_label}" должно быть целым числом.')
-    if min_value is not None and value < min_value:
+    if min_value is not None and value <= min_value:
         raise ValueError(f'Поле "{field_label}" должно быть не меньше {min_value}.')
     if max_value is not None and value > max_value:
         raise ValueError(f'Поле "{field_label}" должно быть не больше {max_value}.')
