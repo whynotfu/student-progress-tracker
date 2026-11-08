@@ -82,17 +82,16 @@ def test_create_curriculum_strips_text_fields(methodist_client, get_row):
 
 
 @pytest.mark.parametrize("field, value, message", [
-    pytest.param("semester", "0", "не меньше 1", id="semester_below_minimum"),
-    pytest.param("semester", "13", "не больше 12", id="semester_above_maximum"),
-    pytest.param("semester", "abc", "должно быть целым числом", id="semester_not_a_number"),
-    pytest.param("hours", "0", "не меньше 1", id="hours_zero"),
-    pytest.param("hours", "-5", "не меньше 1", id="hours_negative"),
-    pytest.param("hours", "много", "должно быть целым числом", id="hours_not_a_number"),
-    pytest.param("teacher_id", "abc", "должно быть целым числом", id="teacher_not_a_number"),
+    ("semester", "0", "не меньше 1"),  # semester below minimum
+    ("semester", "13", "не больше 12"),  # semester above maximum
+    ("semester", "abc", "должно быть целым числом"),  # semester not a number
+    ("hours", "0", "не меньше 1"),  # hours zero
+    ("hours", "-5", "не меньше 1"),  # hours negative
+    ("hours", "много", "должно быть целым числом"),  # hours not a number
+    ("teacher_id", "abc", "должно быть целым числом"),  # teacher not a number
 ])
 def test_create_curriculum_with_invalid_number_is_rejected(methodist_client, count_rows,
                                                            field, value, message):
-    # страница формы с ошибкой, запись не создаётся.
     response = methodist_client.post("/curriculum/new", data=curriculum_form(**{field: value}))
     assert response.status_code == 200
     assert message in response.get_data(as_text=True)
@@ -100,8 +99,8 @@ def test_create_curriculum_with_invalid_number_is_rejected(methodist_client, cou
 
 
 @pytest.mark.parametrize("semester", [
-    pytest.param("1", id="first_semester"),
-    pytest.param("12", id="last_semester"),
+    "1",  # first semester
+    "12",  # last semester
 ])
 def test_create_curriculum_accepts_boundary_semesters(methodist_client, count_rows, semester):
     response = methodist_client.post("/curriculum/new", data=curriculum_form(semester=semester))
