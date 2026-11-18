@@ -15,6 +15,7 @@
       <th>Год поступления</th>
       <th>Форма обучения</th>
       <th>Группа</th>
+      <th>Email</th>
       {% if current_user.is_methodist %}<th></th>{% endif %}
     </tr>
   </thead>
@@ -25,6 +26,7 @@
       <td>{{ s.admission_year }}</td>
       <td>{{ s.study_form }}</td>
       <td>{{ s.group_name }}</td>
+      <td>{{ s.email or "—" }}</td>
       {% if current_user.is_methodist %}
       <td class="text-end">
         <a href="{{ url_for('main.student_edit', student_id=s.id) }}" class="btn btn-sm btn-outline-secondary">Изменить</a>
@@ -36,7 +38,7 @@
       {% endif %}
     </tr>
     {% else %}
-    <tr><td colspan="5" class="text-muted">Нет данных</td></tr>
+    <tr><td colspan="6" class="text-muted">Нет данных</td></tr>
     {% endfor %}
   </tbody>
 </table>
