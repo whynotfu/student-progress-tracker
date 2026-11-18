@@ -1,6 +1,17 @@
-mkdir -p ~/backups
-F=~/backups/nexora_$(date +%Y%m%d_%H%M%S).dump
-docker exec nexora_db pg_dump -U nexora -d nexora -Fc > $F
-test -s $F && echo "BACKUP OK: $F" || { echo "BACKUP FAILED"; exit 1; }
-ls -lh ~/backups | tail -5
-docker exec -i nexora_db pg_restore --list < $F | head -15
+mkdir -p reports
+REF="--reference-url=jdbc:postgresql://10.10.0.9:5432/nexora --reference-username=nexora --reference-password=nexora"
+TGT="--url=jdbc:postgresql://10.10.0.10:5432/nexora --username=nexora --password=nexora"
+CL=reports/sync-prod-%build.number%.xml
+
+echo "===== DIFF BEFORE (stage = reference, prod = target) ====="
+liquibase $TGT $REF diff
+
+echo "===== GENERATE CHANGELOG ====="
+liquibase $TGT $REF --changelog-file=$CL diff-changelog
+cat $CL
+
+echo "===== APPLY TO PROD ====="
+liquibase $TGT --changelog-file=$CL update
+
+echo "===== DIFF AFTER (must be empty) ====="
+liquibase $TGT $REF diff
