@@ -92,6 +92,7 @@ def student_new():
             admission_year=admission_year,
             study_form=request.form["study_form"],
             group_name=request.form["group_name"].strip(),
+            email=request.form.get("email", "").strip() or None,
         )
         db.session.add(student)
         db.session.commit()
