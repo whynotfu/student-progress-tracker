@@ -45,6 +45,7 @@ class Student(db.Model):
     admission_year = db.Column(db.Integer, nullable=False)
     study_form = db.Column(db.String(20), nullable=False)
     group_name = db.Column(db.String(50), nullable=False)
+    email = db.Column(db.String(120))
 
     journal_entries = db.relationship(
         "JournalEntry", backref="student", cascade="all, delete-orphan"
@@ -54,7 +55,6 @@ class Student(db.Model):
     def full_name(self):
         parts = [self.last_name, self.first_name, self.patronymic or ""]
         return " ".join(part for part in parts if part)
-
 
 class Curriculum(db.Model):
     """Запись учебного плана: специальность, дисциплина, семестр, часы, форма отчётности."""
