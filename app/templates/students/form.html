@@ -34,6 +34,10 @@
     <label class="form-label">Группа</label>
     <input type="text" class="form-control" name="group_name" value="{{ student.group_name if student else '' }}" required>
   </div>
+  <div class="mb-3">
+    <label class="form-label">Email</label>
+    <input type="email" class="form-control" name="email" value="{{ student.email or '' if student else '' }}">
+  </div>
   <button type="submit" class="btn btn-primary">Сохранить</button>
   <a href="{{ url_for('main.students_list') }}" class="btn btn-outline-secondary">Отмена</a>
 </form>
