@@ -46,7 +46,7 @@ class Student(db.Model):
     study_form = db.Column(db.String(20), nullable=False)
     group_name = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(120))
-
+    phone = db.Column(db.String(20))
     journal_entries = db.relationship(
         "JournalEntry", backref="student", cascade="all, delete-orphan"
     )
