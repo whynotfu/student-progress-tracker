@@ -120,6 +120,7 @@ def student_edit(student_id):
         student.admission_year = admission_year
         student.study_form = request.form["study_form"]
         student.group_name = request.form["group_name"].strip()
+        student.email = request.form.get("email", "").strip() or None
         db.session.commit()
         flash("Данные студента обновлены", "success")
         return redirect(url_for("main.students_list"))
