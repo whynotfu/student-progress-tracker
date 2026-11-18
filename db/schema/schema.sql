@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict nHosJGh1jHSlsuhjSQvidugjYKSEtmTWU4saFTG4F1Car0chyTaRnWfGUXtSdNw
+\restrict MfNge0zSrUuJTMBF5YTTa0mXVWWM1V1F8NLDTHf1vKTScdgcbcvQPDLz3oogJT1
 
 -- Dumped from database version 16.15 (Debian 16.15-1.pgdg13+2)
 -- Dumped by pg_dump version 16.15 (Debian 16.15-1.pgdg13+2)
@@ -102,7 +102,8 @@ CREATE TABLE public.student (
     admission_year integer NOT NULL,
     study_form character varying(20) NOT NULL,
     group_name character varying(50) NOT NULL,
-    email character varying(120)
+    email character varying(120),
+    phone character varying(20)
 );
 
 
@@ -255,5 +256,5 @@ ALTER TABLE ONLY public.journal_entry
 -- PostgreSQL database dump complete
 --
 
-\unrestrict nHosJGh1jHSlsuhjSQvidugjYKSEtmTWU4saFTG4F1Car0chyTaRnWfGUXtSdNw
+\unrestrict MfNge0zSrUuJTMBF5YTTa0mXVWWM1V1F8NLDTHf1vKTScdgcbcvQPDLz3oogJT1
 
